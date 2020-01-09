@@ -1,21 +1,23 @@
 from flask import Flask
 from flask_bcrypt import Bcrypt
 
-from flask_cookbook.app.api import api
+
 from flask_cookbook.app.config import configurations
-from flask_cookbook.app.model import db
 from flask_migrate import Migrate
 
+from flask_cookbook.app.model import db
+from flask_cookbook.app.api import api
 b_crypt = Bcrypt()
+
 
 
 def create_app(config_filename):
     app = Flask(__name__)
     app.config.from_object(configurations[config_filename])
-    db.init_app(app)
+
     b_crypt.init_app(app)
     api.init_app(app)
-
+    db.init_app(app)
     migrate = Migrate(app, db)
     from flask_cookbook.app.model.auth import UserModel, RevokedTokenModel
     from flask_cookbook.app.model.cookbook import UnitModel, IngredientModel, RecipeIngredientModel, RecipeModel
