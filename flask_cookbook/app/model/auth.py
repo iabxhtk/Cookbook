@@ -2,7 +2,7 @@ from flask_cookbook.app import db
 
 
 class UserModel(db.Model):
-    __tablename__ = "user"
+    __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True, nullable=False)
     email = db.Column(db.String(100), unique=True)
