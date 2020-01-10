@@ -1,7 +1,7 @@
 from marshmallow import Schema, fields
 
 from flask_cookbook.app import db
-from flask_cookbook.app.model.cookbook import IngredientModel, RecipeModel
+from flask_cookbook.app.model.cookbook import IngredientModel, RecipeModel, RecipeIngredientModel, UnitModel
 
 
 class IngredientSchema(Schema):
@@ -33,7 +33,8 @@ class RecipeSchema(Schema):
 
 ingredients_schema = IngredientSchema(many=True)
 detailed_recipes_schema = RecipeSchema(many=True)
-recipes_list_schema = RecipeSchema(only=["name"])
+recipes_list_schema = RecipeSchema(many=True, exclude=["ingredients"])
+units_schema = UnitSchema(many=True)
 
 
 class CookBookService:
@@ -46,7 +47,7 @@ class CookBookService:
         ingredient = IngredientModel(name=name)
         db.session.add(ingredient)
         db.session.commit()
-        return None, 200
+        return None, 201
 
     @staticmethod
     def delete_ingredient_by_id(ingredient_id):
@@ -56,7 +57,7 @@ class CookBookService:
 
         db.session.delete(ingredient)
         db.session.commit()
-        return None, 200
+        return None, 202
 
     @staticmethod
     def get_all_available_ingredients():
@@ -71,11 +72,43 @@ class CookBookService:
         return recipes_list_schema.dump(data)
 
     @staticmethod
-    def get_all_available_recipes():
+    def delete_recipe_by_id(recipe_id):
+        recipe = RecipeModel.query.filter_by(id=recipe_id).first()
+        if recipe is None:
+            return {"error": "Recipe with given id doesn't exist."}, 404
+
+        db.session.delete(recipe)
+        db.session.commit()
+        return None, 202
+
+    @staticmethod
+    def create_new_recipe(data):
+        recipe_ingredients = []
+        for ingredient_data in data["ingredients"]:
+            recipe_ingredient_model = RecipeIngredientModel(unit_id=ingredient_data.get("unit_id", None),
+                                                            ingredient_id=ingredient_data["ingredient_id"],
+                                                            quantity=ingredient_data["quantity"])
+            recipe_ingredients.append(recipe_ingredient_model)
+        recipe_model = RecipeModel(ingredients=recipe_ingredients, name=data["name"], description=data["description"],
+                                   prep_time=data["prep_time"])
+        try:
+            db.session.add(recipe_model)
+            db.session.commit()
+            return None, 201
+        except Exception as e:
+            return {"error": e}, 409
+
+    @staticmethod
+    def get_all_recipes():
         data = RecipeModel.query.all()
-        return {'ingredients': recipes_list_schema.dump(data)}
+        return recipes_list_schema.dump(data)
 
     @staticmethod
     def get_all_detailed_recipes():
         data = RecipeModel.query.all()
-        return {'recipes': detailed_recipes_schema.dump(data)}
+        return detailed_recipes_schema.dump(data)
+
+    @staticmethod
+    def get_all_measurement_units():
+        data = UnitModel.query.all()
+        return units_schema.dump(data)
