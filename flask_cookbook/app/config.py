@@ -18,7 +18,7 @@ class TestingConfig(Config):
 class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(base_project_dir, 'cookbook_dev.db')
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(seconds=1)
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=1)
     JWT_HEADER_TYPE = ''
 
 
