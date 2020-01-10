@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 
 base_project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..\..'))
 
@@ -6,7 +7,7 @@ base_project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..\.
 class Config:
     DEBUG = False
     TESTING = False
-    JWT_SECRET_KEY = ''
+    JWT_SECRET_KEY = 'change_this'
 
 
 class TestingConfig(Config):
@@ -17,8 +18,8 @@ class TestingConfig(Config):
 class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(base_project_dir, 'cookbook_dev.db')
-    JWT_ACCESS_TOKEN_EXPIRES = 1
-    JWT_REFRESH_TOKEN_EXPIRES = 2
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(seconds=1)
+    JWT_HEADER_TYPE = ''
 
 
 class ProductionConfig(Config):

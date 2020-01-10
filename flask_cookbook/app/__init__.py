@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
 
@@ -18,8 +18,9 @@ def create_app(config_filename):
     b_crypt.init_app(app)
     api.init_app(app)
     db.init_app(app)
+
     jwt = JWTManager(app)
-    #workaround...
+    # workaround...
     jwt._set_error_handler_callbacks(api)
     migrate = Migrate(app, db)
     from flask_cookbook.app.model.auth import UserModel, RevokedTokenModel

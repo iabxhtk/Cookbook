@@ -31,6 +31,7 @@ class UserSignIn(Resource):
     @api.response(403, 'Wrong credentials.')
     @api.expect(signin_user_api_model, validate=True)
     def post(self):
+        """Signs in user and retrieves jwt tokens."""
         return AuthService.signin_user(request.json)
 
 
@@ -42,3 +43,10 @@ class UserSignUp(Resource):
     def post(self):
         """Creates new user"""
         return AuthService.create_new_user(request.json)
+
+
+@api.route('/token_check')
+class TokenCheck(Resource):
+    def get(self):
+        """Check if jwt token is still valid."""
+        return AuthService.check_token_validity()

@@ -24,8 +24,8 @@ recipe_api_model = api.model('Recipe', {
 })
 
 
+@api.doc(security='apikey')
 @api.route('/ingredients/<int:id>')
-
 class Ingredient(Resource):
     @jwt_required
     @api.response(202, 'Ingredient successfully deleted.')
@@ -35,8 +35,8 @@ class Ingredient(Resource):
         return CookBookService.delete_ingredient_by_id(id)
 
 
+@api.doc(security='apikey')
 @api.route('/ingredients/')
-
 class IngredientsList(Resource):
     @jwt_required
     def get(self):
@@ -52,6 +52,7 @@ class IngredientsList(Resource):
         return CookBookService.create_new_ingredient(request.json)
 
 
+@api.doc(security='apikey')
 @api.route('/recipes/<int:id>')
 @api.param('id', 'Recipe id.')
 @api.response(404, 'Recipe with given id doesnt exist.')
@@ -68,6 +69,7 @@ class Recipe(Resource):
         return CookBookService.delete_recipe_by_id(id)
 
 
+@api.doc(security='apikey')
 @api.route('/recipes/')
 class RecipeList(Resource):
     @jwt_required
@@ -84,6 +86,7 @@ class RecipeList(Resource):
         return CookBookService.create_new_recipe(request.json)
 
 
+@api.doc(security='apikey')
 @api.route('/detailed_recipes/')
 class DetailedRecipeList(Resource):
     @jwt_required
@@ -92,6 +95,7 @@ class DetailedRecipeList(Resource):
         return CookBookService.get_all_detailed_recipes()
 
 
+@api.doc(security='apikey')
 @api.route('/measurement_units/')
 class MeasurementUnitList(Resource):
     @jwt_required
