@@ -93,6 +93,9 @@ def create_app(config_filename):
         pancakes_recipe = RecipeModel(name="Pancakes", description="How to make delicious pancakes", prep_time=15)
         pancakes_recipe.ingredients.extend(pancake_ingredients)
         db.session.add(pancakes_recipe)
+
+
+
         db.session.commit()
 
     return app
