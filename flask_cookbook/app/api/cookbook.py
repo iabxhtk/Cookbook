@@ -1,4 +1,5 @@
 from flask import request
+from flask_jwt_extended import jwt_required
 from flask_restplus import Namespace, Resource, fields
 from flask_cookbook.app.core.cookbook_service import CookBookService
 
@@ -24,7 +25,9 @@ recipe_api_model = api.model('Recipe', {
 
 
 @api.route('/ingredients/<int:id>')
+
 class Ingredient(Resource):
+    @jwt_required
     @api.response(202, 'Ingredient successfully deleted.')
     @api.response(404, 'Ingredient with given id doesnt exist.')
     def delete(self, id):
@@ -33,11 +36,14 @@ class Ingredient(Resource):
 
 
 @api.route('/ingredients/')
+
 class IngredientsList(Resource):
+    @jwt_required
     def get(self):
         """Retrieves all available ingredients."""
         return CookBookService.get_all_available_ingredients()
 
+    @jwt_required
     @api.expect(ingredient_api_model, validate=True)
     @api.response(409, 'Ingredient with given name already exists.')
     @api.response(201, 'Ingredient successfully created.')
@@ -50,10 +56,12 @@ class IngredientsList(Resource):
 @api.param('id', 'Recipe id.')
 @api.response(404, 'Recipe with given id doesnt exist.')
 class Recipe(Resource):
+    @jwt_required
     def get(self, id):
         """Retrieves a recipe entry by given id."""
         return CookBookService.get_recipe_by_id(id)
 
+    @jwt_required
     @api.response(202, 'Recipe successfully deleted.')
     def delete(self, id):
         """Deletes a recipe entry."""
@@ -62,10 +70,12 @@ class Recipe(Resource):
 
 @api.route('/recipes/')
 class RecipeList(Resource):
+    @jwt_required
     def get(self):
         """Retrieves recipes without the ingredients"""
         return CookBookService.get_all_recipes()
 
+    @jwt_required
     @api.expect(recipe_api_model, validate=True)
     @api.response(409, 'The input data is wrong..')
     @api.response(201, 'Recipe successfully created.')
@@ -76,6 +86,7 @@ class RecipeList(Resource):
 
 @api.route('/detailed_recipes/')
 class DetailedRecipeList(Resource):
+    @jwt_required
     def get(self):
         """Retrieves detailed recipe list with all it's informations and ingredients"""
         return CookBookService.get_all_detailed_recipes()
@@ -83,6 +94,7 @@ class DetailedRecipeList(Resource):
 
 @api.route('/measurement_units/')
 class MeasurementUnitList(Resource):
+    @jwt_required
     def get(self):
         """Retrieves all available measurement units."""
         return CookBookService.get_all_measurement_units()

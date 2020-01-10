@@ -1,14 +1,14 @@
 from flask import Flask
 from flask_bcrypt import Bcrypt
-
+from flask_jwt_extended import JWTManager
 
 from flask_cookbook.app.config import configurations
 from flask_migrate import Migrate
 
 from flask_cookbook.app.model import db
 from flask_cookbook.app.api import api
-b_crypt = Bcrypt()
 
+b_crypt = Bcrypt()
 
 
 def create_app(config_filename):
@@ -18,6 +18,9 @@ def create_app(config_filename):
     b_crypt.init_app(app)
     api.init_app(app)
     db.init_app(app)
+    jwt = JWTManager(app)
+    #workaround...
+    jwt._set_error_handler_callbacks(api)
     migrate = Migrate(app, db)
     from flask_cookbook.app.model.auth import UserModel, RevokedTokenModel
     from flask_cookbook.app.model.cookbook import UnitModel, IngredientModel, RecipeIngredientModel, RecipeModel
@@ -93,8 +96,6 @@ def create_app(config_filename):
         pancakes_recipe = RecipeModel(name="Pancakes", description="How to make delicious pancakes", prep_time=15)
         pancakes_recipe.ingredients.extend(pancake_ingredients)
         db.session.add(pancakes_recipe)
-
-
 
         db.session.commit()
 
