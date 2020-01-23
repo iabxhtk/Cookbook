@@ -36,7 +36,7 @@ All cookbook endpoints require a valid jwt.
 - **DELETE /cookbook/ingredients/{id}** - Deletes an ingredient by given id
 - **GET /cookbook/measurement_units/** - Retrieves all available measurement units
 - **PUT /cookbook/recipes/** - Creates new recipe entry
-- **GET /cookbook/recipes/ **- Retrieves recipes without the ingredients
+- **GET /cookbook/recipes/** - Retrieves recipes without the ingredients
 - **GET /cookbook/recipes/{id}** - Retrieves a recipe entry by given id
 - **DELETE /cookbook/recipes/{id}** - Deletes a recipe entry
 
